@@ -41,7 +41,7 @@ app.use(passport.initialize());
 // ==============================================
 
 // API
-var apiRouter = require('./app/routes/index.js')(app, express);
+var apiRouter = require('./app/routes/api.js')(app, express);
 app.use('/api/v1', apiRouter);
 
 var authRouter = require('./app/routes/auth.js')(express);
