@@ -22,8 +22,8 @@ module.exports = function(app, express) {
   // /api/v1/users/:user_id
   router.route('/users/:user_id')
     .get(authCtrl.isAuthenticated, userCtrl.getOne)
-    .put(authCtrl.isAuthenticated, userCtrl.belongsTo, userCtrl.update);
-    //.delete(authCtrl.isAuthenticated, userCtrl.belongsTo, userCtrl.delete);
+    .put(authCtrl.isAuthenticated, userCtrl.belongsTo, userCtrl.update)
+    .delete(authCtrl.isAuthenticated, userCtrl.belongsTo, userCtrl.delete);
 
   // RETURN ROUTER
   return router;

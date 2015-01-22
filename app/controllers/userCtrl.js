@@ -70,30 +70,62 @@ exports.update = function(req, res) {
   });
 };
 
+// DELETE /api/v1/users/:user_id
+exports.delete = function(req, res) {
+  User.remove({
+    _id: req.params.user_id
+  }, function(err, user) {
+    if (err) res.send(err);
+
+    res.json({
+      message: 'User deleted.'
+    });
+  });
+};
+
+
+// Middleware to check if object belongs to user making call
 exports.belongsTo = function(req, res, next) {
   // Check header, url params, or post params for token
-  var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+  var token = req.body.token || req.params.token || req.headers['x-access-token'];
   // Decode token
   if (token) {
     // verify token and expiration
     jwt.verify(token, secret, function(err, decoded) {
-      if (err) res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
+      if (err) res.status(403).json({
+        success: false,
+        message: 'Failed to authenticate token.'
+      });
 
       req.decoded = decoded;
 
       User.findById(req.params.user_id, function(err, user) {
         if (err) res.send(err);
-        // Success
-        if (user._id != req.decoded.id) {
-          console.log(req.decoded.id);
-          res.status(403).send({ success: false, message: 'Does not belong to user.' });
+
+        if (!user) {
+          res.json({
+            success: false,
+            message: 'User doesn\'t exist'
+          });
         } else {
-          next();
+          // Success
+          if (user._id != req.decoded.id) {
+            console.log(req.decoded.id);
+            res.status(403).send({
+              success: false,
+              message: 'Does not belong to user.'
+            });
+          } else {
+            next();
+          }
         }
       });
     });
   } else {
     // No token
-    res.status(403).send({ success: false, message: 'No token provided.' });
+    res.status(403).send({
+      success: false,
+      message: 'No token provided.'
+    });
   }
 };
