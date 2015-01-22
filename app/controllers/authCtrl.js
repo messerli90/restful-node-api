@@ -103,7 +103,14 @@ exports.isAuthenticated = function(req, res, next) {
 
       req.decoded = decoded;
 
-      next();
+      User.findOne({
+        _id: decoded.id
+      }, function(err, user) {
+        if (err) res.send(err);
+        req.user = user;
+        next();
+      });
+
     });
   } else {
     // No token

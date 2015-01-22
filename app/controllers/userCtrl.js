@@ -1,6 +1,51 @@
 var User = require('../models/user');
+var Product = require('../models/product');
 var jwt = require('jsonwebtoken');
 var secret = require('../../config.js').secret;
+
+// Middleware to check if object belongs to user making call
+exports.belongsTo = function(req, res, next) {
+  // Check header, url params, or post params for token
+  var token = req.body.token || req.params.token || req.headers['x-access-token'];
+  // Decode token
+  if (token) {
+    // verify token and expiration
+    jwt.verify(token, secret, function(err, decoded) {
+      if (err) res.status(403).json({
+        success: false,
+        message: 'Failed to authenticate token.'
+      });
+
+      req.decoded = decoded;
+
+      User.findById(req.params.user_id, function(err, user) {
+        if (err) res.send(err);
+
+        if (!user) {
+          res.json({
+            success: false,
+            message: 'User doesn\'t exist'
+          });
+        } else {
+          if (user._id != req.decoded.id) {
+            res.status(403).send({
+              success: false,
+              message: 'Does not belong to user.'
+            });
+          } else {
+            next();
+          }
+        }
+      });
+    });
+  } else {
+    // No token
+    res.status(403).send({
+      success: false,
+      message: 'No token provided.'
+    });
+  }
+};
 
 // POST /api/v1/users
 exports.create = function(req, res) {
@@ -83,49 +128,13 @@ exports.delete = function(req, res) {
   });
 };
 
-
-// Middleware to check if object belongs to user making call
-exports.belongsTo = function(req, res, next) {
-  // Check header, url params, or post params for token
-  var token = req.body.token || req.params.token || req.headers['x-access-token'];
-  // Decode token
-  if (token) {
-    // verify token and expiration
-    jwt.verify(token, secret, function(err, decoded) {
-      if (err) res.status(403).json({
-        success: false,
-        message: 'Failed to authenticate token.'
-      });
-
-      req.decoded = decoded;
-
-      User.findById(req.params.user_id, function(err, user) {
-        if (err) res.send(err);
-
-        if (!user) {
-          res.json({
-            success: false,
-            message: 'User doesn\'t exist'
-          });
-        } else {
-          // Success
-          if (user._id != req.decoded.id) {
-            console.log(req.decoded.id);
-            res.status(403).send({
-              success: false,
-              message: 'Does not belong to user.'
-            });
-          } else {
-            next();
-          }
-        }
-      });
-    });
-  } else {
-    // No token
-    res.status(403).send({
-      success: false,
-      message: 'No token provided.'
-    });
-  }
+// GET /api/v1/users/:user_id/products
+exports.getProducts = function(req, res) {
+  // Get all products that belong to this user
+  Product.find({ _user: req.params.user_id }, function(err, products) {
+    if (err) res.send(err);
+    res.json(products);
+  });
 };
+
+

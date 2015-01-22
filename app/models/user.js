@@ -17,6 +17,10 @@ var UserSchema = new Schema({
     required: true,
     select: false
   },
+  products: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Product'
+  }],
   created_at: {
     type: Date,
     default: Date.now
