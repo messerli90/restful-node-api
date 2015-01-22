@@ -8,7 +8,7 @@ var authCtrl = require('../controllers/authCtrl');
 var userCtrl = require('../controllers/userCtrl');
 
 
-// CONFIGURATION
+// ROUTES
 // ==============================================
 module.exports = function(app, express) {
   // Define router
@@ -23,6 +23,7 @@ module.exports = function(app, express) {
   router.route('/users/:user_id')
     .get(authCtrl.isAuthenticated, userCtrl.getOne)
     .put(authCtrl.isAuthenticated, userCtrl.belongsTo, userCtrl.update);
+    //.delete(authCtrl.isAuthenticated, userCtrl.belongsTo, userCtrl.delete);
 
   // RETURN ROUTER
   return router;

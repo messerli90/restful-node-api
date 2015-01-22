@@ -47,7 +47,7 @@ exports.getOne = function(req, res) {
   });
 };
 
-// GET /api/v1/users/:user_id
+// PUT /api/v1/users/:user_id
 exports.update = function(req, res) {
   // Find user
   User.findById(req.params.user_id, function(err, user) {
@@ -57,8 +57,6 @@ exports.update = function(req, res) {
     if (req.body.name) user.name = req.body.name;
     if (req.body.username) user.username = req.body.username;
     if (req.body.password) user.password = req.body.password;
-
-
 
     user.updated_at = Date.now();
 
@@ -98,4 +96,4 @@ exports.belongsTo = function(req, res, next) {
     // No token
     res.status(403).send({ success: false, message: 'No token provided.' });
   }
-}
+};

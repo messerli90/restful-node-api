@@ -44,6 +44,9 @@ app.use(passport.initialize());
 var apiRouter = require('./app/routes/index.js')(app, express);
 app.use('/api/v1', apiRouter);
 
+var authRouter = require('./app/routes/auth.js')(express);
+app.use('/authenticate', authRouter);
+
 // Front End
 app.get('*', function(req, res) {
   res.send('Welcome to the front end');
