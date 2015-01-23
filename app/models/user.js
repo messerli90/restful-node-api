@@ -15,7 +15,7 @@ var UserSchema = new Schema({
   password: {
     type: String,
     required: true,
-    select: false
+    select: false   // do not select in query by default
   },
   products: [{
     type: Schema.Types.ObjectId,

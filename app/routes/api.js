@@ -40,6 +40,9 @@ module.exports = function(app, express) {
     .get(productCtrl.getOne)
     .put(authCtrl.isAuthenticated, productCtrl.belongsToUser, productCtrl.update)
     .delete(authCtrl.isAuthenticated, productCtrl.belongsToUser, productCtrl.delete);
+  // /api/v1/products/:product_id
+  router.route('/products/:product_id/removeTags')
+    .put(authCtrl.isAuthenticated, productCtrl.belongsToUser, productCtrl.removeTags);
 
   // RETURN ROUTER
   return router;

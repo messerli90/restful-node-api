@@ -31,7 +31,7 @@ exports.belongsTo = function(req, res, next) {
         }
         // Does not belong to token provider
         if (user._id != req.decoded.id) {
-          return es.status(403).send({
+          return res.status(403).send({
             success: false,
             message: 'Does not belong to user.'
           });
@@ -65,7 +65,7 @@ exports.create = function(req, res) {
         'message': 'Failed. A user with that username already exists.'
       });
     }
-    if(err) return res.send(err);
+    if(err) res.send(err);
 
     // Success
     res.json({
@@ -78,7 +78,7 @@ exports.create = function(req, res) {
 exports.getAll = function(req, res) {
   // Find all users
   User.find(function(err, users) {
-    if (err) return res.send(err);
+    if (err) res.send(err);
     // Success
     res.json(users);
   });
@@ -88,7 +88,7 @@ exports.getAll = function(req, res) {
 exports.getOne = function(req, res) {
   // Find user
   User.findById(req.params.user_id, function(err, user) {
-    if (err) return res.send(err);
+    if (err) res.send(err);
     // Success
     res.json(user);
   });
@@ -108,7 +108,7 @@ exports.update = function(req, res) {
     user.updated_at = Date.now();
 
     user.save(function(err) {
-      if (err) return res.send(err);
+      if (err) res.send(err);
 
       res.json({
         message: 'User updated.'
@@ -122,7 +122,7 @@ exports.delete = function(req, res) {
   User.remove({
     _id: req.params.user_id
   }, function(err, user) {
-    if (err) return res.send(err);
+    if (err) res.send(err);
 
     res.json({
       message: 'User deleted.'
@@ -136,7 +136,7 @@ exports.getProducts = function(req, res) {
   Product.find({
     _user: req.params.user_id
   }, function(err, products) {
-    if (err) return res.send(err);
+    if (err) res.send(err);
     res.json(products);
   });
 };

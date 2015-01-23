@@ -89,7 +89,7 @@ exports.update = function(req, res) {
   });
 };
 
-// DELETE /api/v1/users/:product_id
+// DELETE /api/v1/product/:product_id
 exports.delete = function(req, res) {
   Product.remove({
     _id: req.params.product_id
@@ -98,6 +98,28 @@ exports.delete = function(req, res) {
 
     res.json({
       message: 'Product deleted.'
+    });
+  });
+};
+
+// PUT /api/v1/products/:product_id/removeTags
+exports.removeTags = function(req, res) {
+  Product.findById(req.params.product_id, function(err, product) {
+    if (err) res.send(err);
+    // Remove tags
+    req.body.tags.forEach(function(tag) {
+      product.tags.pull(tag);
+    });
+    // Update product
+    product.updated_at = Date.now();
+    // Save product
+    product.save(function(err) {
+      if (err) return res.send(err);
+
+      res.json({
+        message: 'Product updated',
+        data: product
+      });
     });
   });
 };
