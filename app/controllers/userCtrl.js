@@ -11,36 +11,38 @@ exports.belongsTo = function(req, res, next) {
   if (token) {
     // verify token and expiration
     jwt.verify(token, secret, function(err, decoded) {
-      if (err) res.status(403).json({
+      if (err) return res.status(403).json({
         success: false,
         message: 'Failed to authenticate token.'
       });
 
+      // Store decoded token in request
       req.decoded = decoded;
 
       User.findById(req.params.user_id, function(err, user) {
-        if (err) res.send(err);
+        if (err) return res.send(err);
 
+        // User doesn't exist
         if (!user) {
-          res.json({
+          return res.json({
             success: false,
             message: 'User doesn\'t exist'
           });
-        } else {
-          if (user._id != req.decoded.id) {
-            res.status(403).send({
-              success: false,
-              message: 'Does not belong to user.'
-            });
-          } else {
-            next();
-          }
         }
+        // Does not belong to token provider
+        if (user._id != req.decoded.id) {
+          return es.status(403).send({
+            success: false,
+            message: 'Does not belong to user.'
+          });
+        }
+        // Success, go to next route
+        next();
       });
     });
   } else {
-    // No token
-    res.status(403).send({
+    // No token provided
+    return res.status(403).send({
       success: false,
       message: 'No token provided.'
     });
@@ -58,13 +60,13 @@ exports.create = function(req, res) {
   user.save(function(err) {
     // Username already exists
     if (err.code == 11000) {
-      res.json({
+      return res.json({
         success: false,
         'message': 'Failed. A user with that username already exists.'
       });
-    } else {
-      res.send(err);
     }
+    if(err) return res.send(err);
+
     // Success
     res.json({
       message: 'User created.'
@@ -76,7 +78,7 @@ exports.create = function(req, res) {
 exports.getAll = function(req, res) {
   // Find all users
   User.find(function(err, users) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     // Success
     res.json(users);
   });
@@ -86,7 +88,7 @@ exports.getAll = function(req, res) {
 exports.getOne = function(req, res) {
   // Find user
   User.findById(req.params.user_id, function(err, user) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     // Success
     res.json(user);
   });
@@ -96,7 +98,7 @@ exports.getOne = function(req, res) {
 exports.update = function(req, res) {
   // Find user
   User.findById(req.params.user_id, function(err, user) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
 
     // Update only data that exists in request
     if (req.body.name) user.name = req.body.name;
@@ -106,7 +108,7 @@ exports.update = function(req, res) {
     user.updated_at = Date.now();
 
     user.save(function(err) {
-      if (err) res.send(err);
+      if (err) return res.send(err);
 
       res.json({
         message: 'User updated.'
@@ -120,7 +122,7 @@ exports.delete = function(req, res) {
   User.remove({
     _id: req.params.user_id
   }, function(err, user) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
 
     res.json({
       message: 'User deleted.'
@@ -131,10 +133,10 @@ exports.delete = function(req, res) {
 // GET /api/v1/users/:user_id/products
 exports.getProducts = function(req, res) {
   // Get all products that belong to this user
-  Product.find({ _user: req.params.user_id }, function(err, products) {
-    if (err) res.send(err);
+  Product.find({
+    _user: req.params.user_id
+  }, function(err, products) {
+    if (err) return res.send(err);
     res.json(products);
   });
 };
-
-

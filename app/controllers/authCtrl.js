@@ -96,7 +96,7 @@ exports.isAuthenticated = function(req, res, next) {
   if (token) {
     // verify token and expiration
     jwt.verify(token, secret, function(err, decoded) {
-      if (err) res.status(403).json({
+      if (err) return res.status(403).json({
         success: false,
         message: 'Failed to authenticate token.'
       });
@@ -106,7 +106,7 @@ exports.isAuthenticated = function(req, res, next) {
       User.findOne({
         _id: decoded.id
       }, function(err, user) {
-        if (err) res.send(err);
+        if (err) return res.send(err);
         req.user = user;
         next();
       });
@@ -114,7 +114,7 @@ exports.isAuthenticated = function(req, res, next) {
     });
   } else {
     // No token
-    res.status(403).send({
+    return res.status(403).send({
       success: false,
       message: 'No token provided.'
     });

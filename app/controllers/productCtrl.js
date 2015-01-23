@@ -4,7 +4,7 @@ var Product = require('../models/product.js');
 // Middleware to check ownership
 exports.belongsToUser = function(req, res, next) {
   Product.findById(req.params.product_id, function(err, product) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     if (product._user.toString() != req.user._id.toString()) {
       res.status(403).send({
         success: false,
@@ -46,7 +46,7 @@ exports.create = function(req, res) {
 exports.getAll = function(req, res) {
   // Get all products
   Product.find(function(err, products) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.json(products);
   });
 };
@@ -55,7 +55,7 @@ exports.getAll = function(req, res) {
 exports.getOne = function(req, res) {
   // Get product
   Product.findById(req.params.product_id, function(err, product) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
 
     res.json(product);
   });
@@ -65,7 +65,7 @@ exports.getOne = function(req, res) {
 exports.update = function(req, res) {
   // Get product
   Product.findById(req.params.product_id, function(err, product) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
 
     // Update product
     if (req.body.name) product.name = req.body.name;
@@ -79,7 +79,7 @@ exports.update = function(req, res) {
     product.updated_at = Date.now();
     // Save product
     product.save(function(err) {
-      if (err) res.send(err);
+      if (err) return res.send(err);
 
       res.json({
         message: 'Product updated',
@@ -94,7 +94,7 @@ exports.delete = function(req, res) {
   Product.remove({
     _id: req.params.product_id
   }, function(err, product) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
 
     res.json({
       message: 'Product deleted.'
