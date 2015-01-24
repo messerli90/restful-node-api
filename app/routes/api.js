@@ -47,8 +47,8 @@ module.exports = function(app, express) {
   router.route('/products/:product_id/addComment')
     .put(authCtrl.isAuthenticated, productCtrl.addComment);
   // /api/v1/products/:product_id/:comment_id
-  // router.route('/products/:product_id/:comment_id')
-  //    .put(authCtrl.isAuthenticated, productCtrl.isCommentAuthor, productCtrl.editComment);
+   router.route('/products/:product_id/:comment_id')
+      .put(authCtrl.isAuthenticated, productCtrl.editComment);
   //    //.delete(authCtrl.isAuthenticated, productCtrl.isCommentAuthor, productCtrl.deleteComment);
 
   // RETURN ROUTER

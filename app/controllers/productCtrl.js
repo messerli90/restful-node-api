@@ -151,6 +151,18 @@ exports.addComment = function(req, res) {
 
 
 // PUT /api/v1/products/:product_id/:comment_id
-
+exports.editComment = function(req, res) {
+  Product.findById(req.params.product_id, function(err, product) {
+    if (err) res.send(err);
+    // Find comment child of product by Id
+    var comment = product.comments.id(req.params.comment_id);
+    comment.text = req.body.comment;
+    // Save product
+    product.save(function(err) {
+      if (err) res.send(err);
+      res.send('Comment updated');
+    });
+  });
+};
 
 // DELETE /api/v1/products/:product_id/:comment_id
