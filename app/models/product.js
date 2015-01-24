@@ -1,6 +1,20 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+// Define Comment ChildSchema
+var CommentSchema = new Schema({
+  _user: Schema.Types.ObjectId,
+  text: String,
+  updated_at: {
+    type: Date,
+    default: Date.now()
+  },
+  created_at: {
+    type: Date,
+    default: Date.now()
+  }
+});
+
 // Define Product Schema
 var ProductSchema = new Schema({
   name: {
@@ -13,19 +27,8 @@ var ProductSchema = new Schema({
     ref: 'User',
     required: true
   },
-  // tags: [{
-  //   _id: false,
-  //   name: String
-  // }],
   tags: [String],
-  comments: [{
-    _user: Schema.Types.ObjectId,
-    text: String,
-    created_at: {
-      type: Date,
-      default: Date.now()
-    }
-  }],
+  comments: [CommentSchema],
   created_at: {
     type: Date,
     default: Date.now()

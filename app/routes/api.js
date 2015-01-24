@@ -43,6 +43,13 @@ module.exports = function(app, express) {
   // /api/v1/products/:product_id
   router.route('/products/:product_id/removeTags')
     .put(authCtrl.isAuthenticated, productCtrl.belongsToUser, productCtrl.removeTags);
+  // /api/v1/products/:product_/comments
+  router.route('/products/:product_id/addComment')
+    .put(authCtrl.isAuthenticated, productCtrl.addComment);
+  // /api/v1/products/:product_id/:comment_id
+  // router.route('/products/:product_id/:comment_id')
+  //    .put(authCtrl.isAuthenticated, productCtrl.isCommentAuthor, productCtrl.editComment);
+  //    //.delete(authCtrl.isAuthenticated, productCtrl.isCommentAuthor, productCtrl.deleteComment);
 
   // RETURN ROUTER
   return router;

@@ -123,3 +123,34 @@ exports.removeTags = function(req, res) {
     });
   });
 };
+
+// Comments
+// PUT /api/v1/products/:product_id/comments
+exports.addComment = function(req, res) {
+  Product.findById(req.params.product_id, function(err, product) {
+    if (err) res.send(err);
+
+    // Post comment
+    product.comments.push({
+      _user: req.user._id,
+      text: req.body.comment
+    });
+    product.updated_at = Date.now();
+    product.save(function(err) {
+      if (err) res.send(err);
+
+      res.json({
+        message: 'Comment added',
+        data: req.body.comment
+      });
+    });
+  });
+};
+
+// Middleware to check comment ownership
+
+
+// PUT /api/v1/products/:product_id/:comment_id
+
+
+// DELETE /api/v1/products/:product_id/:comment_id
