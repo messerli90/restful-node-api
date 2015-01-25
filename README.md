@@ -61,17 +61,6 @@ npm install
 | /api/v1/products/:product_id/:comment_id | PUT | isAuthenticated, isCommentAuthor | Update comment child |
 | /api/v1/products/:product_id/:comment_id | DELETE | isAuthenticated, isCommentAuthor | Deletes comment child |
 
-### /authenticate
-
-Calls Passport.js basic or local strategy to verify username and password. Then issues a token
-
-### /api/v1/
-
-Base route for API
-
-#### /api/v1/users
-**GET**
-
 
 ## TODO
 - Secure authentication routes with SSL/TLS
