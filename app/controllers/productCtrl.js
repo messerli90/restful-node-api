@@ -148,7 +148,22 @@ exports.addComment = function(req, res) {
 };
 
 // Middleware to check comment ownership
-
+exports.isCommentAuthor = function(req, res, next) {
+  Product.findById(req.params.product_id, function(err, product) {
+    if (err) return res.send(err);
+    var comment = product.comments.id(req.params.comment_id);
+    if (comment._user.toString() != req.user._id.toString()) {
+      res.status(403).send({
+        success: false,
+        message: 'Does not belong to user.',
+        creator: product._user,
+        user: req.user._id
+      });
+    } else {
+      next();
+    }
+  });
+};
 
 // PUT /api/v1/products/:product_id/:comment_id
 exports.editComment = function(req, res) {
@@ -160,9 +175,21 @@ exports.editComment = function(req, res) {
     // Save product
     product.save(function(err) {
       if (err) res.send(err);
-      res.send('Comment updated');
+      res.json({ success: true, message: 'Comment updated' });
     });
   });
 };
 
 // DELETE /api/v1/products/:product_id/:comment_id
+exports.deleteComment = function(req, res) {
+  Product.findById(req.params.product_id, function(err, product) {
+    if (err) res.send(err);
+    // Find comment child of product by Id
+    var comment = product.comments.id(req.params.comment_id).remove();
+    // Save product
+    product.save(function(err) {
+      if (err) res.send(err);
+      res.json({ success: true, message: 'Comment deleted' });
+    });
+  });
+};
