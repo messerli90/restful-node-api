@@ -27,6 +27,7 @@
     "passport-local": "~1.0.0",
     "passport": "~0.2.1",
     "passport-http": "~0.2.2",
-    "jsonwebtoken": "~3.2.2"
+    "jsonwebtoken": "~3.2.2",
+    "passport-http-bearer": "~1.0.1"
   }
 }

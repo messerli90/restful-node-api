@@ -7,6 +7,7 @@ var config = require('../../config');
 var authCtrl = require('../controllers/authCtrl');
 var userCtrl = require('../controllers/userCtrl');
 var productCtrl = require('../controllers/productCtrl');
+var clientCtrl = require('../controllers/clientCtrl');
 
 
 // ROUTES
@@ -50,6 +51,13 @@ module.exports = function(app, express) {
    router.route('/products/:product_id/:comment_id')
       .put(authCtrl.isAuthenticated, productCtrl.isCommentAuthor, productCtrl.editComment)
       .delete(authCtrl.isAuthenticated, productCtrl.isCommentAuthor, productCtrl.deleteComment);
+
+
+  // CLIENT ROUTES ------------------------------
+  // /api/v1/clients
+  router.route('/clients')
+    .post(authCtrl.isAuthenticated, clientCtrl.postClients)
+    .get(authCtrl.isAuthenticated, clientCtrl.getClients);
 
   // RETURN ROUTER
   return router;
